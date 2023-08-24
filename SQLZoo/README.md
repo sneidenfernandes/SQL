@@ -1,8 +1,8 @@
-## **SQL Zoo: Rudimentary Querying** 
+## SQL Zoo: Rudimentary Querying
 
 In this project, I've used the SQL Zoo exercise datasets and a local MySQL database to explore rudimentary SQL concepts. Each section of the project focuses on specific exercises, where I explain the tables, execute queries, and share my thoughts during the learning process.
 
-## Project Overview
+ Project Overview
 
 The main objectives of this project are:
 - Understand basic SQL queries by tackling real-world scenarios using SQL Zoo exercise datasets.
