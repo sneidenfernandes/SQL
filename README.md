@@ -7,7 +7,7 @@ Till date, the sites I've covered are structured into folders as mentioned below
 
 - SQLZoo  (https://www.SQLzoo.net)
 
-Each category folder contains exercises related to that specific category. Inside each category folder, you'll find individual exercise folders. Each exercise folder contains SQL files and possibly additional resources.
+Each folder contains exercises related to a specefic site. Inside each  folder, you'll find Jupyter notebooks containing solutions. 
 
 
 
