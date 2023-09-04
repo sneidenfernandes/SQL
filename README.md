@@ -6,6 +6,7 @@ Welcome to the SQL Practice repository! This collection contains a variety of SQ
 Till date, the sites I've covered are structured into folders as mentioned below:
 
 - SQLZoo  (https://www.SQLzoo.net)
+- SQL CLimber (https://www.sqlclimber.com)
 
 Each folder contains exercises related to a specefic site which contains solutions.  
 
