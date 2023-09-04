@@ -7,7 +7,7 @@ Till date, the sites I've covered are structured into folders as mentioned below
 
 - SQLZoo  (https://www.SQLzoo.net)
 
-Each folder contains exercises related to a specefic site. Inside each  folder, you'll find Jupyter notebooks containing solutions. 
+Each folder contains exercises related to a specefic site which contains solutions.  
 
 
 
