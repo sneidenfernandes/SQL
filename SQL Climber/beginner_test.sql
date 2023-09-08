@@ -119,5 +119,7 @@ WHERE (t.Name IS NULL) AND (ci.Population < @MaxPopulation AND ci.Population > @
 ORDER BY Population DESC;
 
 
+I planned on coding today, and I will. However, something came up. So I'm writing to this to maintain my streak. I shall come home sloshed post 12 and code. This is all you get for now. 
+
 
 
