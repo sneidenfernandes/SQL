@@ -119,7 +119,34 @@ WHERE (t.Name IS NULL) AND (ci.Population < @MaxPopulation AND ci.Population > @
 ORDER BY Population DESC;
 
 
-I planned on coding today, and I will. However, something came up. So I'm writing to this to maintain my streak. I shall come home sloshed post 12 and code. This is all you get for now. 
+/*
+    Select all tourist attractions that are in the same country as the declared tourist attraction.
+    Select the following columns:
+	- City - city name
+    - Attraction - attraction name 
+	- Description - attraction description
+    Use ascending order by city name and attraction name.
+*/
+
+DECLARE @TouristAttractionId INT = 8
+
+SELECT ci.Name AS City, t.Name AS t, t.Description AS Description FROM City ci JOIN TouristAttraction t ON (ci.Id=t.CityId)
+WHERE ci.CountryId=(SELECT DISTINCT(ci1.CountryId) FROM City ci1 JOIN TouristAttraction t1 ON (ci1.Id=t1.CityId) WHERE t1.Id = @TouristAttractionId )
+ORDER BY ci.Name, t.Name;
+
+/*
+    Select cities that match at least one of the following conditions:
+    - City population is larger than @MinPopulation
+    - City is capital
+    Select the following columns:
+    - Country
+    - City
+    - Population
+    Use descending order by city population.
+*/
+DECLARE @MinPopulation INT = 1000000
+SELECT c.Name AS Country, ci.Name AS City, ci.Population FROM City ci JOIN Country c ON (c.ID = ci.CountryId)
+WHERE ci.Population > @MinPopulation AND ci.Name = c.Capital; 
 
 
 
