@@ -150,3 +150,6 @@ WHERE ci.Population > @MinPopulation AND ci.Name = c.Capital;
 
 
 
+
+
+
