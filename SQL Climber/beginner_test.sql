@@ -177,6 +177,26 @@ SELECT
    ,'@SmallerCityPopulation' = @SmallerCityPopulation
 
 
+/*
+    Select cities whose population difference is not higher than half a million from the declared city.
+    Select the following columns:
+    - Name - city name
+    - Population - city population
+    - PopulationDifference - formula: city population - declared city population
+    Use descending order by city population.
+*/
+DECLARE @CityId INT = 12
+DECLARE @CityPopulation INT;
+
+SELECT @CityPopulation = ci.Population FROM City ci WHERE ci.Id = @CityId;
+
+SELECT ci.Name AS Name, ci.Population As Population, (ci.Population-@CityPopulation) As PopulationDifference 
+FROM City ci WHERE (ci.Population-@CityPopulation) < 500000
+ORDER BY ci.Population DESC;
+
+
+
+
 
 
 
