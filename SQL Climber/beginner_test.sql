@@ -149,6 +149,33 @@ SELECT c.Name AS Country, ci.Name AS City, ci.Population FROM City ci JOIN Count
 WHERE ci.Population > @MinPopulation AND ci.Name = c.Capital; 
 
 
+/* 
+    Set variables @CityName, @CityPopulation for the declared city @CityId.
+    Set variables @SmallerCityId, @SmallerCityName, @SmallerCityPopulation for a smaller city.
+    The smaller city is the city with the largest population of the cities 
+    which has a lower population than the declared city.
+*/
+DECLARE @CityId INT = 7
+DECLARE @CityName NVARCHAR(100)
+DECLARE @CityPopulation INT
+DECLARE @SmallerCityId INT
+DECLARE @SmallerCityName NVARCHAR(100)
+DECLARE @SmallerCityPopulation INT
+
+SELECT @CityName = ci.Name, @CityPopulation= ci.Population FROM City ci WHERE ci.Id = @CityId;
+
+SELECT TOP 1 @SmallerCityId = ci.Id, @SmallerCityName = ci.Name, @SmallerCityPopulation = ci.Population 
+FROM City ci WHERE ci.Population < @CityPopulation ORDER BY ci.Population DESC;
+
+SELECT 
+    '@CityId' = @CityId
+   ,'@CityName'= @CityName 
+   ,'@CityPopulation' = @CityPopulation
+SELECT 
+    '@SmallerCityId' = @SmallerCityId
+   ,'@SmallerCityName' = @SmallerCityName
+   ,'@SmallerCityPopulation' = @SmallerCityPopulation
+
 
 
 
