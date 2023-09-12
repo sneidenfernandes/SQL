@@ -45,10 +45,9 @@ SELECT c.Capital FROM @Country c WHERE CHARINDEX(@Letter, c.Capital) > 0 ORDER B
 */
 
   
-SELECT t.Name, t.Capital 
+SELECT t.Name AS Country, t.Capital AS Capital
 FROM @Country t LEFT JOIN Country c 
 ON (t.Name=c.Name) WHERE c.Id IS NULL ORDER BY t.Name;
-
 
 
 
