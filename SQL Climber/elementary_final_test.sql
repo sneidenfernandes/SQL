@@ -134,6 +134,94 @@ WHERE
 ORDER BY
 	P.UnitPrice DESC;
 
+/*
+	E-shop wants to prepare new products.
+	Insert new products of the declared category into the table @IncomingProduct.
+
+	New product					Brand	UnitPrice	Currency
+	Dell XPS 15 (9570) Touch	Dell	3190		USD
+	Dell Precision 7730			Dell	2390		USD
+*/
+
+DECLARE @IncomingProduct TABLE
+(
+    Title NVARCHAR(100)
+   ,Description NVARCHAR(1000)
+   ,Brand NVARCHAR(100)
+   ,CategoryId INT
+   ,UnitPrice DECIMAL(18,2)
+   ,Currency NVARCHAR(3)
+)
+DECLARE @Category NVARCHAR(100) = 'Laptops'
+DECLARE @CatID INT  SELECT @CatID = cat.Id FROM Eshop.Category cat WHERE cat.Title=@Category;
+
+INSERT INTO @IncomingProduct(Title, Brand, CategoryId, Unitprice, Currency)
+SELECT
+	'Dell XPS 15 (9570) Touch',
+    'Dell',
+    cat.Id,
+    3190,
+    'USD'
+FROM Eshop.Category cat
+WHERE
+	cat.Title = @Category;
+    
+INSERT INTO @IncomingProduct(Title, Brand, CategoryId, Unitprice, Currency)
+SELECT
+	'Dell Precision 7730',
+    'Dell',
+    cat.Id,
+    2390,
+    'USD'
+FROM Eshop.Category cat
+WHERE
+	cat.Title = @Category;
+
+SELECT * FROM @IncomingProduct
+
+
+/*
+    E-shop wants to prepare new products:
+	- There is a script which insert data into the table @IncomingProduct.
+	- Declare a suitable table @IncomingProduct.
+*/
+
+INSERT INTO @IncomingProduct (CategoryId, Title, Brand, UnitPrice)
+VALUES 
+(3, 'Dell XPS 15 (9570) Touch', 'Dell', 3199.5),
+(3, 'Dell Precision 7730', 'Dell', 2399.95),
+(3, 'HP EliteBook 1050 G1', 'HP', 1999),
+(3, 'HP EliteBook 1040 G5', 'HP', 1899),
+(3, 'Lenovo ThinkPad P72', 'Lenovo', 4500)
+
+SELECT * FROM @IncomingProduct
+
+
+/*
+    E-shop wants to prepare new products:
+	- There is a script which insert data into the table @IncomingProduct.
+	- Declare a suitable table @IncomingProduct.
+*/
+
+DECLARE @IncomingProduct TABLE
+(
+    Id INT IDENTITY(100,3) PRIMARY KEY,
+    Title NVARCHAR(100),
+    Brand NVARCHAR(100),
+    CategoryId INT,
+    UnitPrice DECIMAL(18,1),
+    Currency NVARCHAR(3) DEFAULT 'USD'
+    
+)
+INSERT INTO @IncomingProduct (CategoryId, Title, Brand, UnitPrice)
+VALUES 
+(3, 'Dell XPS 15 (9570) Touch', 'Dell', 3199.5),
+(3, 'Dell Precision 7730', 'Dell', 2399.95),
+(3, 'HP EliteBook 1050 G1', 'HP', 1999),
+(3, 'HP EliteBook 1040 G5', 'HP', 1899),
+(3, 'Lenovo ThinkPad P72', 'Lenovo', 4500)
+
+SELECT * FROM @IncomingProduct
 
 
 
