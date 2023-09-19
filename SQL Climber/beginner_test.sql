@@ -195,6 +195,85 @@ FROM City ci WHERE (ci.Population-@CityPopulation) < 500000
 ORDER BY ci.Population DESC;
 
 
+/*
+	E-shop wants to expand to new markets:
+	- Insert products of the declared category into the table @ExpandingProduct with new currency and recalculated price.
+    - All new prices should contain 95 cents/penny, so fix it after recalculation.
+*/
+DECLARE @ExpandingProduct TABLE
+(
+	Title NVARCHAR(100)
+   ,Description NVARCHAR(1000)
+   ,Brand NVARCHAR(100)
+   ,CategoryId INT
+   ,UnitPrice DECIMAL(18,2)
+   ,Currency NVARCHAR(3)
+)
+
+DECLARE @Category NVARCHAR(100) = 'Headphones'
+DECLARE @NewCurrency TABLE (Currency NVARCHAR(3), ExchangeRate DECIMAL(18, 2))
+INSERT INTO @NewCurrency (Currency, ExchangeRate) VALUES ('EUR', 0.89), ('GBP', 0.80)
+-- Insert products into @ExpandingProduct with new currency and recalculated price
+INSERT INTO @ExpandingProduct( Title, Description, Brand, CategoryId, UnitPrice,Currency)
+
+SELECT
+	P.Title,
+    P.Description,
+    P.Brand,
+    P.CategoryId,
+    UnitPrice = CAST((P.UnitPrice * NC.ExchangeRate) AS INT) + 0.95,
+    NC.Currency
+FROM 
+    Eshop.Product P
+CROSS JOIN 
+	@NewCurrency NC
+WHERE P.CategoryId = (SELECT Ca.Id FROM Eshop.Category Ca WHERE Ca.Title=@Category)
+ORDER BY 
+	UnitPrice;
+
+
+/*
+    E-shop wants to change prices:
+    - Calculate new unit prices at table @PreparePrice for the declared category.
+    - All new prices higher than 100 dollars should be without cents. Round them up. 
+*/
+DECLARE @PreparePrice TABLE
+(
+	ProductId INT
+   ,Title NVARCHAR(100)
+   ,UnitPrice DECIMAL(18,2)
+   ,NewUnitPrice DECIMAL(18,2)
+)
+INSERT INTO @PreparePrice (ProductId, Title, UnitPrice)
+SELECT 
+	p.Id
+   ,p.Title
+   ,p.UnitPrice
+FROM Eshop.Product p
+
+DECLARE @ParentCategory NVARCHAR(100) = 'Men''s Accessories'
+DECLARE @PriceIncreaseInPercentage INT = 7
+
+
+INSERT INTO @PreparePrice (ProductId, Title, UnitPrice, NewUnitPrice)
+
+SELECT 
+	P.Id,
+    P.Title,
+    P.UnitPrice,
+	NewUnitPrice = CASE
+    					WHEN UnitPrice * (1 + @PriceIncreaseInPercentage / 100.0) > 100 
+       				    THEN CEILING(UnitPrice * (1 + @PriceIncreaseInPercentage / 100.0))
+                        WHEN UnitPrice * (1 + @PriceIncreaseInPercentage / 100.0) <= 100 
+                        THEN (UnitPrice * (1+@PriceIncreaseInPercentage/100))
+    			   END
+FROM Eshop.Product P
+JOIN Eshop.Category C ON (P.CategoryId=C.Id)
+WHERE C.ParentCategoryId = (SELECT cat.Id From Eshop.Category cat WHERE cat.Title=@ParentCategory);
+
+SELECT * FROM @PreparePrice pp WHERE pp.NewUnitPrice IS NOT NULL
+
+
 
 
 
