@@ -223,5 +223,174 @@ VALUES
 
 SELECT * FROM @IncomingProduct
 
+/*
+	E-shop wants to expand to new markets:
+	- Insert products of the declared category into the table @ExpandingProduct with new currency and recalculated price.
+    - All new prices should contain 95 cents/penny, so fix it after recalculation.
+*/
+DECLARE @ExpandingProduct TABLE
+(
+	Title NVARCHAR(100)
+   ,Description NVARCHAR(1000)
+   ,Brand NVARCHAR(100)
+   ,CategoryId INT
+   ,UnitPrice DECIMAL(18,2)
+   ,Currency NVARCHAR(3)
+)
+
+DECLARE @Category NVARCHAR(100) = 'Headphones'
+DECLARE @NewCurrency TABLE (Currency NVARCHAR(3), ExchangeRate DECIMAL(18, 2))
+INSERT INTO @NewCurrency (Currency, ExchangeRate) VALUES ('EUR', 0.89), ('GBP', 0.80)
+
+-- Insert products into @ExpandingProduct with new currency and recalculated price
+INSERT INTO @ExpandingProduct( Title, Description, Brand, CategoryId, UnitPrice,Currency)
+
+SELECT
+	P.Title,
+    P.Description,
+    P.Brand,
+    P.CategoryId,
+    UnitPrice = CAST((P.UnitPrice * NC.ExchangeRate) AS INT) + 0.95,
+    NC.Currency
+FROM 
+    Eshop.Product P
+CROSS JOIN 
+	@NewCurrency NC
+WHERE P.CategoryId = (SELECT Ca.Id FROM Eshop.Category Ca WHERE Ca.Title=@Category)
+ORDER BY 
+	UnitPrice;
+
+
+/*
+    E-shop wants to change prices:
+    - Calculate new unit prices at table @PreparePrice for the declared category.
+    - All new prices higher than 100 dollars should be without cents. Round them up. 
+*/
+DECLARE @PreparePrice TABLE
+(
+	ProductId INT
+   ,Title NVARCHAR(100)
+   ,UnitPrice DECIMAL(18,2)
+   ,NewUnitPrice DECIMAL(18,2)
+)
+INSERT INTO @PreparePrice (ProductId, Title, UnitPrice)
+SELECT 
+	p.Id
+   ,p.Title
+   ,p.UnitPrice
+FROM Eshop.Product p
+
+DECLARE @ParentCategory NVARCHAR(100) = 'Men''s Accessories'
+DECLARE @PriceIncreaseInPercentage INT = 5
+
+SELECT 
+	P.Id,
+    P.Title,
+    P.UnitPrice,
+	NewUnitPrice = CASE
+    					WHEN UnitPrice * (1 + @PriceIncreaseInPercentage / 100.0) > 100 
+       				    THEN CEILING(UnitPrice * (1 + @PriceIncreaseInPercentage / 100.0))
+                        WHEN UnitPrice <= 100 
+                        THEN  UnitPrice * (1 + @PriceIncreaseInPercentage / 100.00) 
+    			   END
+FROM Eshop.Product P
+JOIN Eshop.Category C ON (P.CategoryId=C.Id)
+WHERE C.ParentCategoryId = (SELECT cat.Id From Eshop.Category cat WHERE cat.Title=@ParentCategory);
+
+SELECT * FROM @PreparePrice pp WHERE pp.NewUnitPrice IS NOT NULL
+
+
+/*
+    E-shop wants to change prices:
+    - Calculate new unit prices at table @PreparePrice for the declared @PriceChange.
+    - Calculate the difference between the new price and the old price.
+    - If the new price does not contain 95 cents then round the price. 
+*/
+DECLARE @PreparePrice TABLE
+(
+	ProductId INT
+   ,Title NVARCHAR(100)
+   ,UnitPrice DECIMAL(18,2)
+   ,NewUnitPrice DECIMAL(18,2)
+   ,PriceDifference DECIMAL(18,2)
+)
+INSERT INTO @PreparePrice (ProductId, Title, UnitPrice)
+SELECT 
+	p.Id
+   ,p.Title
+   ,p.UnitPrice
+FROM Eshop.Product p
+
+DECLARE @PriceChange TABLE (Category NVARCHAR(100), PriceChangeInPercentage INT)
+INSERT INTO @PriceChange (Category, PriceChangeInPercentage)
+VALUES ('Sunglasses', 5), ('Headphones', -5)
+
+UPDATE @PreparePrice
+SET NewUnitPrice = 
+    CASE 
+        WHEN PP.UnitPrice * (1 + PC.PriceChangeInPercentage / 100.0) * 100 % 95 = 0
+        THEN PP.UnitPrice * (1 + PC.PriceChangeInPercentage / 100.0)
+        ELSE ROUND(PP.UnitPrice * (1 + PC.PriceChangeInPercentage / 100.0) * 100 / 95, 2) * 95 / 100
+    END,
+    PriceDifference = PP.UnitPrice * (1 + PC.PriceChangeInPercentage / 100.0) - PP.UnitPrice
+FROM @PreparePrice PP
+INNER JOIN @PriceChange PC ON PP.Title = PC.Category;
+
+SELECT * FROM @PreparePrice pp WHERE pp.NewUnitPrice IS NOT NULL ORDER BY pp.PriceDifference DESC
+
+
+/*
+    Select top N customers:
+	- Customer - customer name
+	- Email - customer email
+	- TotalProducts - number of products which customer have bought 
+    - TotalPrice - total price of all bought products
+	Use descending order by TotalPrice.
+*/
+DECLARE @NumberOfTopCustomers INT = 10
+SELECT 
+	TOP(@NumberOfTopCustomers)
+    C.Customer,
+    C.Email,
+    TotalProducts=SUM(OL.Quantity),
+    TotalPrice = SUM(OL.UnitPrice*OL.Quantity)
+FROM 
+	Eshop.Customer C
+JOIN
+	Eshop.[Order] O ON (C.Id=O.CustomerId)
+JOIN
+	Eshop.OrderLine OL ON (O.Id=Ol.OrderId)
+GROUP BY 
+	C.Customer,C.Email
+ORDER BY
+	TotalPrice DESC;
+	
+
+/*
+    Select orders which total price is more then @MinimalTotalPrice:
+	- OrderDate - order date
+	- TotalProducts - the quantity of all products
+	- TotalPrice - the total price of all products
+    - Customer
+	Use descending order by TotalPrice and then by customer.
+*/
+DECLARE @MinimalTotalPrice DECIMAL(18,2) = 1000
+
+SELECT
+	CAST(O.OrderDate AS DATE) AS OrderDate,
+    SUM(OL.Quantity) AS TotalProducts,
+    SUM(OL.Quantity*OL.UnitPrice) AS TotalPrice,
+    C.Customer
+FROM
+	Eshop.Customer C
+JOIN
+	Eshop.[Order] O ON (C.Id=O.CustomerId)
+JOIN
+	Eshop.OrderLine OL ON (O.Id=OL.OrderId)
+GROUP BY 
+	C.Customer,O.OrderDate
+HAVING SUM(OL.Quantity*OL.UnitPrice) > @MinimalTotalPrice
+ORDER BY
+	TotalPrice DESC, C.Customer;
 
 
