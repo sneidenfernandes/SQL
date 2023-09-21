@@ -1,6 +1,6 @@
-# SQL Practice Repository
+# SQL 
 
-Welcome to the SQL Practice repository! This collection contains a variety of SQL excercises from various sites. I will be solving queries and documenting more sites as I go along. 
+Welcome to the SQL! This collection contains a variety of SQL excercises from various sites. I will be solving queries and documenting more sites as I go along. 
 
 
 Till date, the sites I've covered are structured into folders as mentioned below:
