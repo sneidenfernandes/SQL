@@ -151,11 +151,19 @@ GROUP BY ci.Name HAVING COUNT(t.Name) > @TouristAttractions  ORDER BY COUNT(t.Na
     Select only those countries that number of attraction is at least @MinimumAttractions and at most @MaximumAttractions
     Use descending order by Attractions, then ascending order by country name.
 */
-DECLARE @MinimumAttractions INT = 1
-DECLARE @MaximumAttractions INT = 9
-SELECT c.Name AS Country, COUNT(t.Id) AS Attractions FROM Country c JOIN City ci ON (c.Id=ci.CountryId) JOIN TouristAttraction t ON (ci.ID=t.CityId)
-GROUP BY c.Name HAVING COUNT(t.Id) BETWEEN @MinimumAttractions AND @MaximumAttractions
-ORDER BY Attractions DESC, Country;
-
-
+SELECT
+    C.Name AS Country,
+    COUNT(TA.Id) AS Attractions
+FROM
+    Country C
+LEFT JOIN
+    City CI ON C.Id = CI.CountryId
+LEFT JOIN
+    TouristAttraction TA ON CI.Id = TA.CityId
+GROUP BY
+    C.Name
+HAVING
+    COUNT(TA.Id) BETWEEN @MinimumAttractions AND @MaximumAttractions
+ORDER BY
+    Attractions DESC, Country ASC;
 
