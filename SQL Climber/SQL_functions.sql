@@ -40,14 +40,14 @@ SELECT t.Name, COALESCE(t.Description, 'No description.') AS Description FROM To
     - Name - Name of a city
     - Info - "The population of {city name} is {city population} people." (e.g. "The population of Paris is 2206000 people.")
 */
-DECLARE @CountryId INT = 2
+
 SELECT
-    Name AS CityName,
-    CONCAT('The population of ', Name, ' is ', Population, ' people.') AS Info
-FROM
+    City.Name AS Name,
+    CAST(('The population of ' + Name + ' is ' + CAST(Population AS NVARCHAR(100)) + ' people.') AS NVARCHAR(160)) AS Info 
+FROM 
     City
 WHERE
-    CountryId = @CountryId;
+    City.CountryId = @CountryId;
 
 
 
