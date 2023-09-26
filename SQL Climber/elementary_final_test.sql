@@ -283,20 +283,19 @@ FROM Eshop.Product p
 DECLARE @ParentCategory NVARCHAR(100) = 'Men''s Accessories'
 DECLARE @PriceIncreaseInPercentage INT = 5
 
-SELECT 
-	P.Id,
-    P.Title,
-    P.UnitPrice,
-	NewUnitPrice = CASE
-    					WHEN UnitPrice * (1 + @PriceIncreaseInPercentage / 100.0) > 100 
-       				    THEN CEILING(UnitPrice * (1 + @PriceIncreaseInPercentage / 100.0))
-                        WHEN UnitPrice <= 100 
-                        THEN  UnitPrice * (1 + @PriceIncreaseInPercentage / 100.00) 
-    			   END
+INSERT INTO @PreparePrice(ProductId, Title, UnitPrice, NewUnitPrice) 
+				SELECT 	P.Id,
+                			P.Title,
+                        		P.UnitPrice,
+                			NewUnitPrice = CASE
+    								WHEN UnitPrice * (1 + @PriceIncreaseInPercentage / 100.0) > 100 
+       				    				THEN CAST(CEILING(UnitPrice * (1 + @PriceIncreaseInPercentage / 100.0)) AS DECIMAL(18,2))
+                       					 	WHEN UnitPrice <= 100 
+                        					THEN  UnitPrice * (1 + @PriceIncreaseInPercentage / 100.00) 
+    							END
 FROM Eshop.Product P
 JOIN Eshop.Category C ON (P.CategoryId=C.Id)
 WHERE C.ParentCategoryId = (SELECT cat.Id From Eshop.Category cat WHERE cat.Title=@ParentCategory);
-
 SELECT * FROM @PreparePrice pp WHERE pp.NewUnitPrice IS NOT NULL
 
 
@@ -325,17 +324,25 @@ DECLARE @PriceChange TABLE (Category NVARCHAR(100), PriceChangeInPercentage INT)
 INSERT INTO @PriceChange (Category, PriceChangeInPercentage)
 VALUES ('Sunglasses', 5), ('Headphones', -5)
 
-UPDATE @PreparePrice
-SET NewUnitPrice = 
-    CASE 
-        WHEN PP.UnitPrice * (1 + PC.PriceChangeInPercentage / 100.0) * 100 % 95 = 0
-        THEN PP.UnitPrice * (1 + PC.PriceChangeInPercentage / 100.0)
-        ELSE ROUND(PP.UnitPrice * (1 + PC.PriceChangeInPercentage / 100.0) * 100 / 95, 2) * 95 / 100
-    END,
-    PriceDifference = PP.UnitPrice * (1 + PC.PriceChangeInPercentage / 100.0) - PP.UnitPrice
-FROM @PreparePrice PP
-INNER JOIN @PriceChange PC ON PP.Title = PC.Category;
+UPDATE pp
+	SET NewUnitPrice =  CASE WHEN (P.UnitPrice * (1 + CAST(PC.PriceChangeInPercentage AS DECIMAL(18,2))/100) -
+    							  CAST(P.UnitPrice * (1 + CAST(PC.PriceChangeInPercentage AS DECIMAL(18,2))/100) AS INT)) <> 0.95
+                             THEN  ROUND(P.UnitPrice * (1 + CAST(PC.PriceChangeInPercentage AS DECIMAL(18,2))/100),0)
+                             
+                             ELSE P.UnitPrice * (1 + CAST(PC.PriceChangeInPercentage AS DECIMAL(18,2))/100)
+                             	
+                        END
+FROM
+@PreparePrice pp 
+JOIN Eshop.Product P ON (pp.ProductId=P.Id)
+JOIN Eshop.Category C ON (P.CategoryId=C.ID)
+JOIN @PriceChange PC ON (PC.Category=C.Title)
+WHERE PC.Category IN (SELECT Category FROM @PriceChange);
 
+UPDATE pp
+	SET pp.PriceDifference = pp.NewUnitPrice-pp.UnitPrice
+FROM @PreparePrice pp
+	
 SELECT * FROM @PreparePrice pp WHERE pp.NewUnitPrice IS NOT NULL ORDER BY pp.PriceDifference DESC
 
 
@@ -376,21 +383,16 @@ ORDER BY
 */
 DECLARE @MinimalTotalPrice DECIMAL(18,2) = 1000
 
-SELECT
-	CAST(O.OrderDate AS DATE) AS OrderDate,
-    SUM(OL.Quantity) AS TotalProducts,
-    SUM(OL.Quantity*OL.UnitPrice) AS TotalPrice,
-    C.Customer
-FROM
-	Eshop.Customer C
-JOIN
-	Eshop.[Order] O ON (C.Id=O.CustomerId)
-JOIN
-	Eshop.OrderLine OL ON (O.Id=OL.OrderId)
-GROUP BY 
-	C.Customer,O.OrderDate
-HAVING SUM(OL.Quantity*OL.UnitPrice) > @MinimalTotalPrice
-ORDER BY
-	TotalPrice DESC, C.Customer;
+SELECT 
+	P.Brand,
+    P.Title AS Product,
+   	SUM(OL.Quantity) AS Sold,
+    SoldAtDiscount = COUNT(CASE WHEN OL.UnitPrice < P.UnitPrice THEN 1 ELSE NULL END )
+FROM Eshop.Product P
+		JOIN Eshop.OrderLine OL ON (OL.ProductId=P.ID)
+GROUP BY P.Title, P.Brand
+HAVING SUM(OL.Quantity) >= @MinimumSoldProducts
+ORDER BY SUM(OL.Quantity) DESC, P.Title;
 
+	
 
