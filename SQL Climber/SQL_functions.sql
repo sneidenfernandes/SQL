@@ -2,7 +2,7 @@
     Select from the table TouristAttraction the following columns for the declared city:
     - Name - Name of a tourist attraction
     - DescriptionLength - Length of description
-*/
+*///
 DECLARE @CityId INT = 1
 SELECT t.Name, LEN(t.Description) AS DescriptionLength
 FROM TouristAttraction t WHERE t.CityId = @CityId;
