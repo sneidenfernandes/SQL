@@ -24,7 +24,7 @@ SELECT @Capital = c.Capital, @Country = c.Name FROM Country c WHERE c.ID = @Coun
 
 PRINT CONCAT(@Capital,' is the capital of ',@Country);
 
-/*
+/* wrote this to maintain my streak
     Select all tourist attractions in the declared country which has a one-word name.
 	Select the following columns:
 	- City - city name
