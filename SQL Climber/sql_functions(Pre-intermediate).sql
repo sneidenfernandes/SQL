@@ -51,3 +51,12 @@ SELECT
    ,'@FirstName' = @FirstName
    ,'@MiddleName' = @MiddleName
    ,'@LastName' = @LastName
+
+/*
+	Replace the name 'Augustus' with 'Tiberius' in the @Emperor.
+*/
+DECLARE @Emperor NVARCHAR(100) = 'Emperor of the Roman Empire is Augustus. (Sep 18, 14 AD)'
+SET @Emperor = REPLACE(@Emperor, 'Augustus', 'Tiberius');
+SELECT '@Emperor' = @Emperor
+
+
