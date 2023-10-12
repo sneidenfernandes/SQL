@@ -1,7 +1,6 @@
 # SQL 
 
-Welcome to my SQL Repository! This collection contains a variety of SQL excercises from various sites, SQL Projects And Case Studies.
-
+Welcome to my SQL Repository! This collection contains a variety of SQL excercises from various sites, SQL Projects And Case Studies which I have been / will work towards. 
 
 
 
