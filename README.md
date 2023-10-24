@@ -16,4 +16,4 @@ Each folder contains exercises related to a specefic site which contains solutio
 To clone the repository use: 
 
    ```sh
-   git clone https://github.com/your-username/sql-practice.git
+   git clone https://github.com/sneidenfernandes/SQL
