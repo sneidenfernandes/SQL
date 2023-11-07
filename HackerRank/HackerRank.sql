@@ -64,3 +64,20 @@ WHERE
     OR
     s.CITY LIKE 'U%';
 
+
+/**
+Weather Observation Station 7
+**/
+SELECT DISTINCT(s.CITY) FROM STATION AS s 
+WHERE 
+    s.CITY LIKE '%a' 
+    OR 
+    s.CITY LIKE '%e' 
+    OR
+    s.CITY LIKE '%i' 
+    OR 
+    s.CITY LIKE '%o' 
+    OR
+    s.CITY LIKE '%u';
+
+
