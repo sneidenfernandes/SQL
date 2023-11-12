@@ -97,3 +97,18 @@ Weather Observation Station 9
 
 SELECT DISTINCT CITY FROM STATION 
 WHERE NOT (CITY LIKE 'a%' OR CITY LIKE 'e%' OR CITY LIKE 'i%' OR CITY LIKE 'o%' OR CITY LIKE 'u%');
+
+/**
+Weather Observation Station 10
+**/
+
+SELECT DISTINCT CITY FROM STATION 
+WHERE NOT (CITY LIKE '%a' OR CITY LIKE '%e' OR CITY LIKE '%i' or city '%o' or  city like '%u');
+
+
+/**
+Weather Observation Station 11
+**/
+
+SELECT DISTINCT CITY FROM STATION 
+WHERE LEFT(CITY,1)  ('A','E','I','O','U') OR RIGHT(CITY,1) NOT IN ('A','E','I','O','U');
