@@ -112,3 +112,14 @@ Weather Observation Station 11
 
 SELECT DISTINCT CITY FROM STATION 
 WHERE LEFT(CITY,1)  ('A','E','I','O','U') OR RIGHT(CITY,1) NOT IN ('A','E','I','O','U');
+
+
+/**
+Weather Observation Station 12
+**/
+
+SELECT DISTINCT CITY FROM STATION 
+WHERE LEFT(CITY,1) NOT IN ('A','E','I','O','U') AND RIGHT(CITY, 1) NOT IN  ('A','E','I','O','U');
+
+
+
