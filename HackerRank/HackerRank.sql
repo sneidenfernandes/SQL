@@ -166,3 +166,10 @@ SELECT B.N,
     END AS 'Type'
 FROM BST B ORDER BY B.N;
 
+/* 
+Average Populatiohn
+*/
+
+
+SELECT ROUND(AVG(POPULATION), 0) FROM CITY;
+
