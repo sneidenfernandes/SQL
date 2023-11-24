@@ -34,6 +34,12 @@ Weather Observation Station 1
 SELECT s.CITY, s.STATE FROM STATION s;
 
 /**
+Weather Observation Station 2
+**/
+
+SELECT ROUND(SUM(LAT_N), 2), ROUND(SUM(LONG_W), 2) FROM STATION;
+
+/**
 Weather Observation Station 3
 **/
 SELECT DISTINCT(CITY) FROM STATION WHERE MOD(ID,2) = 0;
