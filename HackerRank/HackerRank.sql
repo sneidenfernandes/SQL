@@ -179,3 +179,8 @@ Average Populatiohn
 
 SELECT ROUND(AVG(POPULATION), 0) FROM CITY;
 
+/*
+Japanese Population
+*/
+
+SELECT SUM(POPULATION) FROM CITY WHERE COUNTRYCODE = 'JPN'; 
