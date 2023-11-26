@@ -184,3 +184,65 @@ Japanese Population
 */
 
 SELECT SUM(POPULATION) FROM CITY WHERE COUNTRYCODE = 'JPN'; 
+
+
+/*
+Revising Aggreagations - Count Function 
+*/
+
+SELECT COUNT(*) FROM CITY WHERE POPULATION > 100000;
+
+/*
+Revising Aggregations - Sum Function
+*/
+
+SELECT SUM(POPULATION) FROM CITY WHERE DISTRICT = 'CALIFORNIA';
+
+/*
+Revising Aggregations - Averages
+*/
+
+SELECT AVG(POPULATION) FROM CITY WHERE DISTRICT = 'CALIFORNIA';
+
+
+/*
+Average Population 
+*/
+
+SELECT ROUND(AVG(POPULATION), 0) FROM CITY;
+
+
+/*
+Japan Population 
+*/
+
+SELECT SUM(POPULATION) FROM CITY WHERE COUNTRYCODE = 'JPN'; 
+
+/*
+Population Denisty Difference
+*/
+SELECT MAX(POPULATION) - MIN(POPULATION) FROM CITY;
+
+/*
+The Blunder
+*/
+
+SELECT ROUND(AVG(SALARY)) - ROUND(AVG(REPLACE(SALARY,0,''))) FROM EMPLOYEES;
+
+/*
+Top Earners
+*/
+
+SELECT SALARY*MONTHS, COUNT(*) FROM EMPLOYEE
+WHERE SALARY*MONTHS = (SELECT MAX(SALARY*MONTHS) FROM EMPLOYEE)
+GROUP BY SALARY*MONTHS;
+
+
+/*
+
+*/
+/*
+*/
+/*
+*//*
+*/
