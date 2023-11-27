@@ -254,7 +254,26 @@ DELIMITER ;
 CALL printStars(20);
 
 /*
+Draw A Triangle 2
 */
+
+DELIMITER //
+
+CREATE PROCEDURE PrintPattern(i INT)
+BEGIN 
+    DECLARE counter INT; 
+    SET counter = 1;
+    WHILE counter <= i  DO
+        SELECT REPEAT('* ', counter) AS '';
+        SET counter = counter + 1;
+    END WHILE;
+    
+END //
+
+DELIMITER ;
+
+CALL PrintPattern(20);
+
 /*
 *//*
 */
