@@ -239,8 +239,20 @@ GROUP BY SALARY*MONTHS;
 
 
 /*
-
+Draw A Triangle 1
 */
+DELIMITER //
+CREATE PROCEDURE printStars( value int)
+BEGIN
+    WHILE value > 0 DO
+        SELECT repeat('* ', value) as '';
+        SET value = value - 1;
+    END WHILE;
+END  //
+DELIMITER ;
+
+CALL printStars(20);
+
 /*
 */
 /*
