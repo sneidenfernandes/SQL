@@ -275,5 +275,8 @@ DELIMITER ;
 CALL PrintPattern(20);
 
 /*
-*//*
+New Companies
+*/
+
+/*
 */
