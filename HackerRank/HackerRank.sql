@@ -278,5 +278,30 @@ CALL PrintPattern(20);
 New Companies
 */
 
+SELECT c.company_code, c.founder, COUNT(DISTINCT l.lead_manager_code) ,
+        COUNT(DISTINCT s.senior_manager_code), COUNT(DISTINCT m.manager_code),
+        COUNT( DISTINCT e.employee_code)
+    FROM Company c  
+    JOIN  Lead_Manager l ON c.company_code = l.company_code
+    JOIN  Senior_Manager s ON c.company_code = s.company_code
+    JOIN  Manager m ON c.company_code = m.company_code
+    JOIN  Employee e ON c.company_code = e.company_code
+GROUP BY c.company_code, c.founder ORDER BY c.company_code;
+
 /*
+Weather Observation 18
 */
+
+SELECT ROUND(ABS(MAX(LAT_N)-MIN(LAT_N))+ABS(MAX(LONG_W)-MIN(LONG_W)),4) FROM STATION;
+
+/*
+Weather Observatiom 19
+*/
+
+SELECT ROUND(
+            SQRT(POWER(P.b-P.a,2) + POWER(P.d-P.c,2))
+            ,4) 
+FROM 
+(SELECT MIN(LAT_N) a, MAX(LAT_N) b, MIN(LONG_W) c, MAX(LONG_W) d FROM STATION) AS P;
+
+
