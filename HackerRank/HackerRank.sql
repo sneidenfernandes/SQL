@@ -317,3 +317,4 @@ PREPARE stmt FROM 'SELECT ROUND(LAT_N,4) FROM STATION ORDER BY LAT_N LIMIT 1 OFF
 
 EXECUTE stmt USING @row_count;
 
+Select name from city where countrycode = 'JPN';
