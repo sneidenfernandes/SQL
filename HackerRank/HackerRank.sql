@@ -317,3 +317,15 @@ PREPARE stmt FROM 'SELECT ROUND(LAT_N,4) FROM STATION ORDER BY LAT_N LIMIT 1 OFF
 EXECUTE stmt USING @row_count;
 
 Select name from city where countrycode = 'JPN';
+
+WITH A AS
+(SELECT start_date, ROW_NUMBER() OVER() rw
+FROM Projects WHERE start_date NOT IN (SELECT end_date FROM Projects) ),
+
+B AS
+(SELECT end_date, ROW_NUMBER() OVER() rw
+FROM Projects WHERE end_date NOT IN (SELECT start_date FROM Projects) )
+
+SELECT A.start_date,B.end_date 
+FROM A JOIN B ON (A.rw=B.rw)
+ORDER BY (B.end_date - A.start_date) ASC, A.start_date;
