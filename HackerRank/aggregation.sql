@@ -1,0 +1,77 @@
+/* Revising Aggregations - The Count Function */
+
+SELECT COUNT(*) FROM CITY WHERE POPULATION > 100000;
+
+/* Revising Aggreagations - The Sum Function */
+
+SELECT SUM(POPULATION) FROM CITY WHERE DISTRICT = 'CALIFORNIA';
+
+/* Revising Aggregations - Averages */
+
+SELECT AVG(POPULATION) FROM CITY WHERE DISTRICT = 'CALIFORNIA';
+
+/* Average Population */
+
+SELECT ROUND(AVG(POPULATION), 0) FROM CITY;
+
+/* Japan Population */
+
+SELECT SUM(POPULATION) FROM CITY WHERE COUNTRYCODE = 'JPN'; 
+
+/* Population Density Difference */
+
+SELECT MAX(POPULATION) - MIN(POPULATION) FROM CITY;
+
+/* THe Blunder */
+
+SELECT ROUND(AVG(SALARY)) - ROUND(AVG(REPLACE(SALARY,0,''))) FROM EMPLOYEES;
+
+/* Top Earners */
+
+SELECT SALARY*MONTHS, COUNT(*) FROM EMPLOYEE
+WHERE SALARY*MONTHS = (SELECT MAX(SALARY*MONTHS) FROM EMPLOYEE)
+GROUP BY SALARY*MONTHS;
+
+/* Weather Observation Station 2 */
+
+SELECT ROUND(SUM(LAT_N), 2), ROUND(SUM(LONG_W), 2) FROM STATION;
+
+/* Weather Observation Station 13 */
+
+SELECT ROUND(SUM(LAT_N),4) FROM STATION WHERE (LAT_N > 38.7880) AND (LAT_N < 137.2345);
+
+/* Weather Observation Station 14 */
+
+SELECT ROUND(LAT_N,4) FROM STATION WHERE LAT_N < 137.2345 ORDER BY LAT_N DESC LIMIT 1;
+
+/* Weather Observation Station 15 */
+
+SELECT ROUND(LONG_W,4) FROM STATION WHERE LAT_N < 137.2345 ORDER BY LAT_N DESC LIMIT 1;
+
+/* Weather Observation Station 16 */
+
+SELECT ROUND(MIN(LAT_N),4) FROM STATION WHERE LAT_N > 38.7780 ORDER BY LAT_N LIMIT 1;
+
+/* Weather Observation Station 17 */
+
+SELECT ROUND(LONG_W,4) FROM STATION WHERE LAT_N > 38.7780 ORDER BY LAT_N LIMIT 1;
+
+/* Weather Observation Station 18 */
+
+SELECT ROUND(ABS(MAX(LAT_N)-MIN(LAT_N))+ABS(MAX(LONG_W)-MIN(LONG_W)),4) FROM STATION;
+
+/* Weather Observation Station 19 */
+
+SELECT ROUND(
+            SQRT(POWER(P.b-P.a,2) + POWER(P.d-P.c,2))
+            ,4) 
+FROM 
+(SELECT MIN(LAT_N) a, MAX(LAT_N) b, MIN(LONG_W) c, MAX(LONG_W) d FROM STATION) AS P;
+
+/* Weather Observation Station 20 */
+
+SET @row_count = (SELECT CAST(FLOOR(COUNT(*)/2) AS SIGNED) FROM STATION);
+
+PREPARE stmt FROM 'SELECT ROUND(LAT_N,4) FROM STATION ORDER BY LAT_N LIMIT 1 OFFSET ?';
+
+EXECUTE stmt USING @row_count;
