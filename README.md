@@ -10,7 +10,8 @@ Till date, the sites I've covered are structured into folders as mentioned below
 - SQL CLimber (https://www.sqlclimber.com)
 - HackerRank (https://www.hackerrank.com/domains/sql)
 
-The projects that I've completed are as follows:
+The case studies that I'm woriking on are as follows:
+-  Dannys Diner 
 
 
 
