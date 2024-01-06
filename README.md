@@ -11,7 +11,8 @@ Till date, the sites I've covered are structured into folders as mentioned below
 - HackerRank (https://www.hackerrank.com/domains/sql)
 
 The case studies that I'm woriking on are as follows:
--  Case Study #1 - Dannys Diner 
+-  Case Study #1 - Dannys Diner
+-  Case Study #2 - Pizza Runner
 
 
 
