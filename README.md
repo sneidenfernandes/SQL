@@ -10,11 +10,6 @@ Till date, the sites I've covered are structured into folders as mentioned below
 - SQL CLimber (https://www.sqlclimber.com)
 - HackerRank (https://www.hackerrank.com/domains/sql)
 
-The case studies that I'm woriking on are as follows:
--  Case Study #1 - Dannys Diner
--  Case Study #2 - Pizza Runner
--  Case Study #3 - Foodie Fi
-
 
 
 Each folder contains exercises related to a specefic site which contains solutions.I may solve more sites and document my work as I go along. 
